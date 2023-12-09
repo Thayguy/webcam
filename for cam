@@ -1,0 +1,39 @@
+import cv2
+import time
+
+class ipcamCapture:
+    def run_camera(self):
+        vidRGB = cv2.VideoCapture(0)
+        self.video_flag = False  
+        
+
+        while True:
+            ret, imageRGB = vidRGB.read()
+
+            if ret:
+                cv2.imshow('RGB LIVE Image', imageRGB)
+
+                key = cv2.waitKey(1) & 0xFF			             	                
+                if key == ord('v'):
+                    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+                    outRGB = cv2.VideoWriter('outputRGB.mov', fourcc, 30, (640, 480))
+                    self.video_flag = True
+			             	                
+                if key == ord('q'):
+                    print("--> Break webkey !!")
+                    outRGB.release()
+                    self.video_flag = False
+                    vidRGB.release()
+                    break
+
+                if self.video_flag == True :
+                    outRGB.write(imageRGB)
+
+            else:
+                vidRGB.release()
+                break
+
+if __name__ == '__main__':
+    ipcam = ipcamCapture()
+    ipcam.run_camera()
+    cv2.destroyAllWindows()
